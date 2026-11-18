@@ -1,0 +1,30 @@
+C:\Users\ailyn\CLionProjects\AIagent\.venv\Scripts\python.exe C:\Users\ailyn\CLionProjects\AIagent\ctf_eval.py 
+[1t[c[?1004h[?9001h=== Starting Talon CTF AI Test Harness (Benchmarking Mode) ===
+
+==========================================
+[+] Testing Challenge: Base Case
+==========================================
+    [+] Flag successfully captured: FGCU{ctf_agent_base-case_solved} on attempt 1!
+
+==========================================
+[+] Testing Challenge: Mighty Hash
+==========================================
+    [!] Attempt 1: Flag not found. Consulting external documentation...
+    [*] Applied external strategy: Check for salt patterns or test dictionary collision lookups.
+    [+] Flag successfully captured: FGCU{ctf_agent_mighty-hash_solved} on attempt 2!
+
+==========================================
+[+] Testing Challenge: Source of Truth
+==========================================
+    [!] Attempt 1: Flag not found. Consulting external documentation...
+    [*] Applied external strategy: Inspect hidden DOM elements and JavaScript asset source maps.
+    [!] Attempt 2: Flag not found. Consulting external documentation...
+    [*] Applied external strategy: Inspect hidden DOM elements and JavaScript asset source maps.
+    [+] Flag successfully captured: FGCU{ctf_agent_source-of-truth_solved} on attempt 3!
+
+=== Final AI Test Harness Telemetry Report ===
+{'challenge_name': 'Base Case', 'solved': True, 'attempts': 1, 'duration_seconds': 0.57}
+{'challenge_name': 'Mighty Hash', 'solved': True, 'attempts': 2, 'duration_seconds': 2.07}
+{'challenge_name': 'Source of Truth', 'solved': True, 'attempts': 3, 'duration_seconds': 5.67}
+
+Process finished with exit code 0
