@@ -46,6 +46,9 @@ def run(cfg: dict, secrets: dict, client: Any, run_id: str | None = None) -> str
     logger = RunLogger("results", "logs", run_id)
     print(f"Run: {logger.run_id}")
 
+    if os.environ.get("CTF_BROWSER_MODE") == "1":
+        return _run_browser_session(cfg, client, logger)
+
     platform = load_platform(cfg, secrets)
     print("Logging in to platform…")
     platform.login()
@@ -90,3 +93,44 @@ def run(cfg: dict, secrets: dict, client: Any, run_id: str | None = None) -> str
 
     print(f"Done. Solved {solved}/{len(chosen)}. Results: {logger.csv_path}")
     return logger.csv_path
+
+
+def _run_browser_session(cfg: dict, client: Any, logger: RunLogger) -> str:
+    """One website-first AI session. No challenge JSON or local grading.
+
+    This is an integration test, not yet a per-challenge evaluation run.
+    """
+    from .browser import CTFBrowser
+
+    run_cfg = cfg["run"]
+    browser = CTFBrowser()
+    sandbox = Sandbox(cfg)
+    # Placeholder metadata only. The agent receives the actual challenge
+    # descriptions through browser_read, not through this object.
+    session = Challenge(
+        id="browser-session", name="Website-selected challenge",
+        category="browser", description="",
+    )
+    try:
+        browser.start()  # User signs in; browser remains on challenge dashboard.
+        sandbox.start()
+        agent = CTFAgent(
+            client=client, model=run_cfg["model"], sandbox=sandbox,
+            platform=None,  # Browser mode NEVER calls the JSON-backed grader.
+            challenge=session, flag_regex=cfg["flag"]["regex"],
+            max_steps=int(run_cfg["max_steps"]),
+            max_wall_seconds=int(run_cfg["max_wall_seconds"]),
+            on_event=logger.event_sink(session.id), browser=browser,
+        )
+        result = agent.run()
+        logger.write_result(
+            result,
+            float(run_cfg.get("price_per_mtok_input", 0) or 0),
+            float(run_cfg.get("price_per_mtok_output", 0) or 0),
+        )
+        print(f"Browser session finished: solved={result.solved}; "
+              f"steps={result.steps}; results={logger.csv_path}")
+        return logger.csv_path
+    finally:
+        sandbox.stop()
+        browser.close()

@@ -1,4 +1,5 @@
 .env
+*.env
 __pycache__/
 *.pyc
 results/*.csv
@@ -6,3 +7,4 @@ results/*.jsonl
 logs/*.log
 !results/.gitkeep
 !logs/.gitkeep
+browser_artifacts/
